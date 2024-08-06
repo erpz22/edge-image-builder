@@ -14,18 +14,19 @@ cp {{ .manifestsPath }}/* /var/lib/rancher/k3s/server/manifests/
 umount /var
 
 {{- if and .apiVIP .apiHost }}
-echo "{{ .apiVIP }} {{ .apiHost }}" >> /etc/hosts
+echo "{{ .apiVIP }} {{ .apiHost }}" >>/etc/hosts
 {{- end }}
 
 mkdir -p /etc/rancher/k3s/
 cp {{ .configFilePath }}/{{ .configFile }} /etc/rancher/k3s/config.yaml
 
 if [ -f {{ .registryMirrors }} ]; then
-cp {{ .registryMirrors }} /etc/rancher/k3s/registries.yaml
+    cp {{ .registryMirrors }} /etc/rancher/k3s/registries.yaml
 fi
 
 export INSTALL_K3S_SKIP_DOWNLOAD=true
 export INSTALL_K3S_SKIP_START=true
+export INSTALL_K3S_SKIP_ENABLE=true
 export INSTALL_K3S_BIN_DIR=/opt/bin
 
 mkdir -p $INSTALL_K3S_BIN_DIR
