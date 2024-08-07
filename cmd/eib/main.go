@@ -13,6 +13,7 @@ func main() {
 	app := cmd.NewApp()
 	app.Commands = []*cli.Command{
 		cmd.NewBuildCommand(build.Run),
+		cmd.NewExtractCommand(build.Extract),
 		cmd.NewValidateCommand(build.Validate),
 		cmd.NewVersionCommand(build.Version),
 	}
