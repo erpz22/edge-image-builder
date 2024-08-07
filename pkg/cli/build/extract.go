@@ -31,14 +31,14 @@ func Extract(_ *cli.Context) error {
 
 		rootBuildDir = filepath.Join(args.ConfigDir, defaultBuildDir)
 		if err := os.MkdirAll(rootBuildDir, os.ModePerm); err != nil {
-			log.Auditf("The root build directory could not be set up under the configuration directory '%s'.", args.ConfigDir)
+			log.Auditf("The root extract directory could not be set up under the configuration directory '%s'.", args.ConfigDir)
 			return err
 		}
 	}
 
 	buildDir, err := build.SetupBuildDirectory(rootBuildDir)
 	if err != nil {
-		log.Audit("The build directory could not be set up.")
+		log.Audit("The extract directory could not be set up.")
 		return err
 	}
 
