@@ -63,7 +63,7 @@ func Extract(_ *cli.Context) error {
 	}
 
 	ctx := buildContext(buildDir, "", artefactsDir, args.ConfigDir, imageDefinition)
-	if cmdErr = validateImageDefinition(ctx); cmdErr != nil {
+	if cmdErr = validateExtractDefinition(ctx); cmdErr != nil {
 		cmd.LogError(cmdErr, checkExtractLogMessage)
 		os.Exit(1)
 	}

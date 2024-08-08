@@ -39,6 +39,33 @@ func ValidateDefinition(ctx *image.Context) map[string][]FailedValidation {
 	return failures
 }
 
+func ExtractValidateDefinition(ctx *image.Context) map[string][]FailedValidation {
+	failures := map[string][]FailedValidation{}
+
+	schemaValidationFailure := validateAPIVersion(ctx)
+	if schemaValidationFailure != nil {
+		// If the schema is invalid, there's no reason to even attempt the rest of
+		// the validation
+		failures[apiVersionComponent] = []FailedValidation{*schemaValidationFailure}
+		return failures
+	}
+
+	validations := map[string]validateComponent{
+		osComponent:       validateOperatingSystem,
+		registryComponent: validateEmbeddedArtifactRegistry,
+		k8sComponent:      validateKubernetes,
+	}
+	for componentName, v := range validations {
+		componentFailures := v(ctx)
+
+		if len(componentFailures) > 0 {
+			failures[componentName] = componentFailures
+		}
+	}
+
+	return failures
+}
+
 func findDuplicates(items []string) []string {
 	var duplicates []string
 

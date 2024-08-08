@@ -100,3 +100,39 @@ func validateImageDefinition(ctx *image.Context) *cmd.Error {
 		LogMessage:  logMessageBuilder.String(),
 	}
 }
+
+func validateExtractDefinition(ctx *image.Context) *cmd.Error {
+	failedValidations := validation.ExtractValidateDefinition(ctx)
+	if len(failedValidations) == 0 {
+		return nil
+	}
+
+	logMessageBuilder := strings.Builder{}
+	userMessageBuilder := strings.Builder{}
+
+	userMessageBuilder.WriteString("Extract definition validation found the following errors:\n")
+	logMessageBuilder.WriteString("Extract definition validation failures:\n")
+
+	orderedComponentNames := make([]string, 0, len(failedValidations))
+	for c := range failedValidations {
+		orderedComponentNames = append(orderedComponentNames, c)
+	}
+	slices.Sort(orderedComponentNames)
+
+	for _, componentName := range orderedComponentNames {
+		userMessageBuilder.WriteString("  " + componentName + "\n")
+
+		for _, cf := range failedValidations[componentName] {
+			userMessageBuilder.WriteString("    " + cf.UserMessage + "\n")
+			logMessageBuilder.WriteString("  " + cf.UserMessage + "\n")
+			if cf.Error != nil {
+				logMessageBuilder.WriteString("    " + cf.Error.Error() + "\n")
+			}
+		}
+	}
+
+	return &cmd.Error{
+		UserMessage: userMessageBuilder.String(),
+		LogMessage:  logMessageBuilder.String(),
+	}
+}
