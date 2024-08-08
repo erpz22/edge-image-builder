@@ -56,15 +56,13 @@ func Extract(_ *cli.Context) error {
 		os.Exit(1)
 	}
 
-	combustionDir, artefactsDir, err := build.SetupCombustionDirectory(buildDir)
+	artefactsDir, err := build.SetupExtractArtifactsDirectory(buildDir)
 	if err != nil {
-		log.Auditf("Setting up the combustion directory failed. %s", checkExtractLogMessage)
-		zap.S().Fatalf("Failed to create combustion directories: %s", err)
+		log.Auditf("Setting up the extract artifacts directory failed. %s", checkExtractLogMessage)
+		zap.S().Fatalf("Failed to create extract artifacts directories: %s", err)
 	}
 
-	ctx := buildContext(buildDir, combustionDir, artefactsDir, args.ConfigDir, imageDefinition)
-
-	ctx.ImageDefinition.OperatingSystem.Packages = image.Packages{}
+	ctx := buildContext(buildDir, "", artefactsDir, args.ConfigDir, imageDefinition)
 	if cmdErr = validateImageDefinition(ctx); cmdErr != nil {
 		cmd.LogError(cmdErr, checkExtractLogMessage)
 		os.Exit(1)
@@ -91,7 +89,6 @@ func Extract(_ *cli.Context) error {
 
 	return nil
 }
-
 
 // If the image definition requires it, starts the necessary services, returning an error in the event of failure.
 func bootstrapExtractDependencyServices(ctx *image.Context, rootDir string) *cmd.Error {
