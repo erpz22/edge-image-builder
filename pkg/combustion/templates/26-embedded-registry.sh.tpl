@@ -3,7 +3,7 @@ set -euo pipefail
 
 mkdir /opt/hauler
 cp {{ .RegistryDir }}/hauler /opt/hauler/hauler
-rsync -avc {{ .RegistryDir }}/*-{{ .RegistryTarSuffix }} /opt/hauler/
+rsync -av {{ .RegistryDir }}/*-{{ .RegistryTarSuffix }} /opt/hauler/
 
 cat <<-EOF >/etc/systemd/system/eib-embedded-registry.service
 [Unit]
