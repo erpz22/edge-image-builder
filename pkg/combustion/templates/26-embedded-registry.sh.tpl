@@ -3,9 +3,9 @@ set -euo pipefail
 
 mkdir /opt/hauler
 cp {{ .RegistryDir }}/hauler /opt/hauler/hauler
-cp {{ .RegistryDir }}/*-{{ .RegistryTarSuffix }} /opt/hauler/
+rsync -av {{ .RegistryDir }}/*-{{ .RegistryTarSuffix }} /opt/hauler/
 
-cat <<- EOF > /etc/systemd/system/eib-embedded-registry.service
+cat <<-EOF >/etc/systemd/system/eib-embedded-registry.service
 [Unit]
 Description=Load and Serve Embedded Registry
 After=network.target
